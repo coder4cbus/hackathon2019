@@ -1,45 +1,72 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user!
-  before_action :admin_only, :except => :show
+  def new
+  	@user= User.new  
+  end
+
+  def create
+    @user=User.new(user_params)
+    @user.save
+    if @user.save
+       userRegister = BiometricFaceAuthentication.new
+	     response = userRegister.register(@user.username)
+	     if response != nil && response["trained"] == true
+	  	    session[:user_id]=@user.id
+	        redirect_to user_path(@user.id),notice: "New user created."
+	     else
+             render 'new'
+        end
+    end
+
+  end 
+
 
   def index
-    @users = User.all
   end
 
+
   def show
-    @user = User.find(params[:id])
-    unless current_user.admin?
-      unless @user == current_user
-        redirect_to root_path, :alert => "Access denied."
-      end
-    end
+  	@user=User.find(params[:id])
+    @bot = Bot.new(name: "minkbot", data_file: "bot_data")
   end
+
+  def edit
+    @user = User.find(params[:id])
+  end
+
 
   def update
     @user = User.find(params[:id])
-    if @user.update_attributes(secure_params)
-      redirect_to users_path, :notice => "User updated."
-    else
-      redirect_to users_path, :alert => "Unable to update user."
+    @oldUserName = @user.username
+    @user = User.update(@user.id, user_params)
+    if @user.save
+      @newUserName = @user.username
     end
+    userUpdate = BiometricFaceAuthentication.new
+    response = userUpdate.edit(@oldUserName , @newUserName)
+    if response != nil && response["trained"] == true
+          session[:user_id]=@user.id
+          redirect_to user_path(@user.id),notice: "User Account updated."
+       else
+        
+        redirect_to  user_path , method: :put
+      end
   end
 
   def destroy
-    user = User.find(params[:id])
-    user.destroy
-    redirect_to users_path, :notice => "User deleted."
+    @user = User.find params[:id]
+    userDelete = BiometricFaceAuthentication.new
+    response = userDelete.request_delete(@user.username)
+    @user.destroy
+    redirect_to  root_path 
   end
+
+  def delete
+  end
+
 
   private
 
-  def admin_only
-    unless current_user.admin?
-      redirect_to root_path, :alert => "Access denied."
-    end
+  def user_params
+  	params.require(:user).permit(:username, :email)
   end
-
-  def secure_params
-    params.require(:user).permit(:role)
-  end
-
 end

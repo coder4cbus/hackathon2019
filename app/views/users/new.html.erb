@@ -1,0 +1,37 @@
+<%= render 'shared/header' %>
+    <title>Agent Biometric Log-In</title>
+    <link href="css/camera.css" rel="stylesheet" type="text/css" />
+    <h1>Face Recognition Test</h1>
+    <div id='camera'>
+      <div id='placeholder'>
+	  <input type="file" accept="image/*" capture="camera" />
+        <p>Your browser does not support a camera!</p>
+      </div>
+    </div>
+    <br>
+    <input id='photo_id' placeholder='Enter Log-In ID' type='text'>
+    <button id='add_to_collection'>Add To Collection</button>
+    <br>
+    <div id='upload_status'></div>
+    <div id='upload_result'></div>
+    <br>
+    <img height='100' id='loading_img' src='images/loading.gif' width='100'>
+    <audio id='audio_speech' src='#'></audio>
+    <br>
+    <br>
+    <p>
+      <a href="/collection/create">Create Collection</a> | <a href="/collection/delete">Delete Collection</a>
+    </p>
+
+
+		<div class="form_class"><%= form_for @user do |f| %>
+
+   <%= f.text_field :username, required: true, :placeholder => 'Username' %><br>
+
+		  <%= f.email_field :email , :placeholder => 'email'%><br />
+		  
+		  <%= f.submit "sign up", class: :form_button %>
+		  
+		</div>
+	</div>
+<% end %>
