@@ -9,8 +9,7 @@ class UsersController < ApplicationController
     if @user.save
        userRegister = BiometricFaceAuthentication.new
 	     response = userRegister.register(@user.username)
-	     if response != nil && response["trained"] == true
-	  	    session[:user_id]=@user.id
+	     if response  == "MATCHED"
 	        redirect_to user_path(@user.id),notice: "New user created."
 	     else
              render 'new'

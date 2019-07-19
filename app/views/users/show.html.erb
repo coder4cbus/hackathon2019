@@ -1,6 +1,6 @@
 <header class="navbar navbar-fixed-top navbar-inverse">
     <div class="container">
-       <h2 id ="logo" >Hello <%= @user.username %></h2>
+       <h2 id ="logo" >Hello <%= @user.username %> you successfully logged in</h2>
           <nav>
              <ul class="nav navbar-nav navbar-right">
              <li><%= link_to "Edit Account",edit_user_path(params[:id]), method: :get %></li>
