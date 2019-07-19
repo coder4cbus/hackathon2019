@@ -23,8 +23,8 @@ class BiometricFaceAuthentication
 
 	  def store_img(filename)
 		AWS::S3::Base.establish_connection!(
-		  :access_key_id => "AKIARCTPPHM3YLUPKEY5",
-		  :secret_access_key => "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"
+		  :access_key_id => ENV[ACCESS_KEY_ID]
+		  :secret_access_key => ENV[SECRET_ACCESS_KEY]
 		)
 
 		file = "loginimage/#{filename}.jpg"
